@@ -69,6 +69,11 @@ export class App {
             if(Wall.list[i].isOutside) {
                 Wall.remove(i);
             }
+            if(Wall.list[i].isCollision(this.bird.boundingBox)) {
+                this.bird.boundingBox.color = `rgba(255, 0, 0, 0.3)`;
+            } else {
+                this.bird.boundingBox.color = `rgba(0, 0, 255, 0.3)`;
+            }
         }
 
         this.bird.update();

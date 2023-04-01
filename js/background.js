@@ -43,4 +43,5 @@ export class Background {
             this.height
         );
     }
+
 }

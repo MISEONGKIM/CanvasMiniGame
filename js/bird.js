@@ -1,4 +1,5 @@
 import { App } from './app.js';
+import { BoundingBox } from './boundingBox.js';
 
 export class Bird {
     constructor() {
@@ -19,8 +20,10 @@ export class Bird {
 
         App.canvas.addEventListener('click', () => {
             this.vy += -10;
-            console.log(this.vy);
         });
+
+        // + 10, + 16 이런 것들은 박스 크기 조절해서 적당한 크기로 만들기 위한 임의의 값.
+        this.boundingBox = new BoundingBox(this.x + 10, this.y + 16, this.width - 15, this.height - 20);
     }
     update() {
         this.frameRate += 1;
@@ -30,6 +33,8 @@ export class Bird {
         }
         this.vy += this.gravity;
         this.y += this.vy;
+
+        this.boundingBox.y = this.y + 16;
     }
 
     draw() {
@@ -37,6 +42,7 @@ export class Bird {
             this.img,
             (this.img.width / 15) * this.frame, 0, this.img.width / 15 , this.img.height,
             this.x, this.y, this.width, this.height
-        )
+        );
+        this.boundingBox.draw();
     }
 }

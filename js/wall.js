@@ -1,4 +1,5 @@
 import { App } from './app.js';
+import { BoundingBox } from './boundingBox.js';
 import { randomNumBetween } from './utils.js';
 
 export class Wall {
@@ -37,6 +38,10 @@ export class Wall {
         this.y2 = this.y1 + this.height + this.gabY;
 
         this.isGenerate = false;
+
+        // + 30, - 60은 바운딩박스의 적당한 크기 조정을 위해 설정한 임의값.
+        this.boundingBox1 = new BoundingBox(this.x + 30, this.y1 + 30, this.width - 60, this.height - 60);
+        this.boundingBox2 = new BoundingBox(this.x + 30, this.y2 + 30, this.width - 60, this.height - 60);
     }
     
     get canGenerateWall() {
@@ -58,6 +63,8 @@ export class Wall {
 
     update() {
         this.x += -3;
+
+        this.boundingBox1.x = this.boundingBox2.x = this.x + 30;
     }
     draw() {
         //벽을 위아래로 배치 
@@ -75,5 +82,13 @@ export class Wall {
             //Canvas에 실제로 그려질 이미지 좌표,크기  
             this.x, this.y2, this.width, this.height
         );
+
+        this.boundingBox1.draw();
+        this.boundingBox2.draw();
+    }
+
+    
+    isCollision(target) {
+        return (this.boundingBox1.isCollision(target) || this.boundingBox2.isCollision(target));
     }
 }
