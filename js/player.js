@@ -1,15 +1,15 @@
 import { App } from './app.js';
 import { BoundingBox } from './boundingBox.js';
 
-export class Bird {
+export class Player {
     constructor() {
-        this.img = document.querySelector('#bird-img');
+        this.img = document.querySelector('#player-img');
 
         this.x = App.width * 0.1;
         this.y = App.height * 0.5;
 
         this.width = 130;
-        //이미지 사이즈 2096 * 96, bird의 갯수는 15개 , 새 한마리당 가로 세로 비율(가로 : 2096 /15, 세로 : 96) 140:96
+        //이미지 사이즈 2096 * 96, player의 갯수는 15개 , 새 한마리당 가로 세로 비율(가로 : 2096 /15, 세로 : 96) 140:96
         this.height = this.width * (96 / Math.ceil(2096 / 15));
 
         this.frameRate = 0;
@@ -38,6 +38,7 @@ export class Bird {
 
         if( this.y < 0) {
             this.y = 0;
+            this.vy = 0;
         }
     }
 

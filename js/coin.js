@@ -31,7 +31,7 @@ export class Coin {
         return this.x + this.width < 0;
     }
 
-    idCollision(target) {
+    isCollision(target) {
         return this.boundingBox.isCollision(target);
     }
 

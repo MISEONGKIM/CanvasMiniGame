@@ -52,6 +52,10 @@ export class Wall {
     get isOutside() {
         return this.x + this.width < 0;
     }
+    
+    static reset() {
+        Wall.list = [];
+    }
 
     static create() {
         const newWall = new Wall({type : Math.random() < 0.3 ? 'SMALL' : 'BIG'});

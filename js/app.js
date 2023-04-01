@@ -1,4 +1,4 @@
-import { Background, Wall, Bird, Coin, Score } from "./index.js";
+import { Background, Wall, Player, Coin, Score, GameHandler, GameStatus } from "./index.js";
 
 export class App {
     static canvas = document.querySelector('canvas');
@@ -10,45 +10,50 @@ export class App {
     static height = 768;
 
     constructor() {
-        this.backgrounds = [
-            new Background({img : document.querySelector('#bg3-img'), speed : -1}),
-            new Background({img : document.querySelector('#bg2-img'), speed : -2}),
-            new Background({img : document.querySelector('#bg1-img'), speed : -4}),
-        ];
-        Wall.create();
-        this.score = new Score();
-        this.bird = new Bird();
-
-        this.preTime = Date.now();
-        window.addEventListener('resize', this.resize.bind(this));
-
+        window.addEventListener('load', () => {
+            App.canvas.width = App.width * App.dpr;
+            App.canvas.height = App.height * App.dpr;
+            App.ctx.scale(App.dpr, App.dpr);
+        });
     }
 
-    animation() {
-        requestAnimationFrame(this.animation.bind(this));
+    startAnimation() {
+        this.animationId = requestAnimationFrame(this.startAnimation.bind(this));
         const now = Date.now();
         if (now - this.preTime < App.interval) return;
         this.exec();
         this.preTime = now - ((now - this.preTime) % App.interval);
     }
 
-    resize() {
-        App.canvas.width = App.width * App.dpr;
-        App.canvas.height = App.height * App.dpr;
-        App.ctx.scale(App.dpr, App.dpr);
-
-        //반응형으로 만들기 위해 width를 아래처럼 작은 값의 90%값으로 설정
-        const width = innerWidth > innerHeight ? innerHeight * 0.9 : innerWidth * 0.9;
-        // 4: 3 의 비율
-        App.canvas.style.width = width + 'px';
-        App.canvas.style.height = width * (3 / 4) + 'px';
+    stopAnimation() {
+        cancelAnimationFrame(this.animationId);
     }
 
     start() {
-        window.addEventListener('load', () => {
-            this.resize();
-            this.animation();
+        this.backgrounds = [
+            new Background({img : document.querySelector('#bg3-img'), speed : -1}),
+            new Background({img : document.querySelector('#bg2-img'), speed : -2}),
+            new Background({img : document.querySelector('#bg1-img'), speed : -4}),
+        ];
+  
+        this.backgrounds.forEach(bg => {
+            bg.draw();
         });
+        
+        this.handler = new GameHandler(this);
+        this.handler.status = GameStatus.READY;
+        
+        this.reset();
+       
+    }
+
+    reset() {
+        Wall.reset();
+        Wall.create();
+        this.player = new Player();
+        this.score = new Score();
+
+        this.preTime = Date.now();
     }
 
     exec() {
@@ -79,10 +84,9 @@ export class App {
                 }
             }
            
-            if(Wall.list[i].isCollision(this.bird.boundingBox)) {
-                this.bird.boundingBox.color = `rgba(255, 0, 0, 0.3)`;
-            } else {
-                this.bird.boundingBox.color = `rgba(0, 0, 255, 0.3)`;
+            if(Wall.list[i].isCollision(this.player.boundingBox)) {
+                this.handler.status = GameStatus.FINISHED;
+                break;
             }
         }
 
@@ -93,14 +97,18 @@ export class App {
             if (Coin.list[i].isOutside) {
                 Coin.remove(i);
             }
-            if (Coin.list[i].idCollision(this.bird.boundingBox)) {
+            if (Coin.list[i].isCollision(this.player.boundingBox)) {
                 Coin.remove(i);
                 this.score.scoreCount += 1;
             }
         }
 
-        this.bird.update();
-        this.bird.draw();
+        this.player.update();
+        this.player.draw();
+
+        if(this.player.y >= App.height) {
+            this.handler.status = GameStatus.FINISHED;
+        }
 
         this.score.update();
         this.score.draw();
