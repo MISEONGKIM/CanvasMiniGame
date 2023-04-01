@@ -15,7 +15,6 @@ export class App {
             new Background({img : document.querySelector('#bg2-img'), speed : -2}),
             new Background({img : document.querySelector('#bg1-img'), speed : -4}),
         ];
-        this.backgrounds.forEach(bg => bg.draw())
         this.handler = new GameHandler(this);
         this.handler.status = GameStatus.READY;
         this.reset();
