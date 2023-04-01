@@ -10,11 +10,16 @@ export class App {
     static height = 768;
 
     constructor() {
-        window.addEventListener('load', () => {
-            App.canvas.width = App.width * App.dpr;
-            App.canvas.height = App.height * App.dpr;
-            App.ctx.scale(App.dpr, App.dpr);
-        });
+        this.backgrounds = [
+            new Background({img : document.querySelector('#bg3-img'), speed : -1}),
+            new Background({img : document.querySelector('#bg2-img'), speed : -2}),
+            new Background({img : document.querySelector('#bg1-img'), speed : -4}),
+        ];
+        this.backgrounds.forEach(bg => bg.draw())
+        this.handler = new GameHandler(this);
+        this.handler.status = GameStatus.READY;
+        this.reset();
+
     }
 
     startAnimation() {
@@ -29,22 +34,13 @@ export class App {
         cancelAnimationFrame(this.animationId);
     }
 
-    start() {
-        this.backgrounds = [
-            new Background({img : document.querySelector('#bg3-img'), speed : -1}),
-            new Background({img : document.querySelector('#bg2-img'), speed : -2}),
-            new Background({img : document.querySelector('#bg1-img'), speed : -4}),
-        ];
-  
-        this.backgrounds.forEach(bg => {
-            bg.draw();
+    start() {      
+        window.addEventListener('load', () => {
+            App.canvas.width = App.width * App.dpr;
+            App.canvas.height = App.height * App.dpr;
+            App.ctx.scale(App.dpr, App.dpr);
+            this.backgrounds.forEach(bg => bg.draw());
         });
-        
-        this.handler = new GameHandler(this);
-        this.handler.status = GameStatus.READY;
-        
-        this.reset();
-       
     }
 
     reset() {
