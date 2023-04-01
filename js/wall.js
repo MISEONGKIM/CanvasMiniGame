@@ -85,8 +85,8 @@ export class Wall {
             this.x, this.y2, this.width, this.height
         );
 
-        this.boundingBox1.draw();
-        this.boundingBox2.draw();
+        // this.boundingBox1.draw();
+        // this.boundingBox2.draw();
     }
 
     

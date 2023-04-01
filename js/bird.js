@@ -35,6 +35,10 @@ export class Bird {
         this.y += this.vy;
 
         this.boundingBox.y = this.y + 16;
+
+        if( this.y < 0) {
+            this.y = 0;
+        }
     }
 
     draw() {
@@ -43,6 +47,6 @@ export class Bird {
             (this.img.width / 15) * this.frame, 0, this.img.width / 15 , this.img.height,
             this.x, this.y, this.width, this.height
         );
-        this.boundingBox.draw();
+        // this.boundingBox.draw();
     }
 }

@@ -1,4 +1,4 @@
-import { Background, Wall, Bird, Coin } from "./index.js";
+import { Background, Wall, Bird, Coin, Score } from "./index.js";
 
 export class App {
     static canvas = document.querySelector('canvas');
@@ -16,6 +16,7 @@ export class App {
             new Background({img : document.querySelector('#bg1-img'), speed : -4}),
         ];
         Wall.create();
+        this.score = new Score();
         this.bird = new Bird();
 
         this.preTime = Date.now();
@@ -61,6 +62,11 @@ export class App {
             Wall.list[i].update();
             Wall.list[i].draw();
 
+            if(Wall.list[i].isOutside) {
+                Wall.remove(i);
+                continue;
+            }
+
             if(Wall.list[i].canGenerateWall) {
                 Wall.list[i].isGenerate = true;
                 const newWall = Wall.create();
@@ -72,10 +78,7 @@ export class App {
                     );
                 }
             }
-
-            if(Wall.list[i].isOutside) {
-                Wall.remove(i);
-            }
+           
             if(Wall.list[i].isCollision(this.bird.boundingBox)) {
                 this.bird.boundingBox.color = `rgba(255, 0, 0, 0.3)`;
             } else {
@@ -87,13 +90,20 @@ export class App {
             Coin.list[i].update();
             Coin.list[i].draw();
 
-            if (Coin.list[i].x + Coin.list[i].width < 0) {
+            if (Coin.list[i].isOutside) {
                 Coin.remove(i);
+            }
+            if (Coin.list[i].idCollision(this.bird.boundingBox)) {
+                Coin.remove(i);
+                this.score.scoreCount += 1;
             }
         }
 
-        // this.bird.update();
+        this.bird.update();
         this.bird.draw();
+
+        this.score.update();
+        this.score.draw();
 
     };
 }
