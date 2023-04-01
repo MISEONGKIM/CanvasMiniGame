@@ -15,9 +15,7 @@ export class App {
             new Background({img : document.querySelector('#bg2-img'), speed : -2}),
             new Background({img : document.querySelector('#bg1-img'), speed : -4}),
         ];
-        this.walls = [
-            new Wall({type : 'BIG'})
-        ];
+        Wall.create();
         this.preTime = Date.now();
         window.addEventListener('resize', this.resize.bind(this));
 
@@ -27,17 +25,7 @@ export class App {
         requestAnimationFrame(this.animation.bind(this));
         const now = Date.now();
         if (now - this.preTime < App.interval) return;
-        
-        App.ctx.clearRect(0, 0, App.width, App.height);
-        this.backgrounds.forEach(bg => {
-            bg.update();
-            bg.draw();
-        })
-        this.walls.forEach(w => {
-            w.update();
-            w.draw();
-        })
-
+        this.exec();
         this.preTime = now - ((now - this.preTime) % App.interval);
     }
 
@@ -59,4 +47,26 @@ export class App {
             this.animation();
         });
     }
+
+    exec() {
+        App.ctx.clearRect(0, 0, App.width, App.height);
+        this.backgrounds.forEach(bg => {
+            bg.update();
+            bg.draw();
+        });
+
+        for (let i = Wall.list.length - 1; i > -1; i--) {
+            Wall.list[i].update();
+            Wall.list[i].draw();
+
+            if(Wall.list[i].canGenerateWall) {
+                Wall.list[i].isGenerate = true;
+                Wall.create();
+            }
+
+            if(Wall.list[i].isOutside) {
+                Wall.remove(i);
+            }
+        }
+    };
 }
