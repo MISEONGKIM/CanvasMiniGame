@@ -29,6 +29,7 @@ export class Wall {
 
         //끝에서 벽이 등장.
         this.x = App.width;
+        this.vx = -6;
         //위아래 벽 사이이의 간격.
         this.gabY = randomNumBetween(App.height * 0.2, App.height * 0.35);
 
@@ -53,8 +54,9 @@ export class Wall {
     }
 
     static create() {
-        const oldArray = Wall.list ?? [];
-        Wall.list = oldArray.concat([new Wall({type : Math.random() < 0.3 ? 'SMALL' : 'BIG'})]);
+        const newWall = new Wall({type : Math.random() < 0.3 ? 'SMALL' : 'BIG'});
+        Wall.list.push(newWall);
+        return newWall;
     }
 
     static remove(index) {
@@ -62,7 +64,7 @@ export class Wall {
     }
 
     update() {
-        this.x += -3;
+        this.x += this.vx;
 
         this.boundingBox1.x = this.boundingBox2.x = this.x + 30;
     }

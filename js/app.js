@@ -1,4 +1,4 @@
-import { Background, Wall, Bird } from "./index.js";
+import { Background, Wall, Bird, Coin } from "./index.js";
 
 export class App {
     static canvas = document.querySelector('canvas');
@@ -63,7 +63,14 @@ export class App {
 
             if(Wall.list[i].canGenerateWall) {
                 Wall.list[i].isGenerate = true;
-                Wall.create();
+                const newWall = Wall.create();
+                if(Math.random() < 0.5) { 
+                    Coin.create(
+                        newWall.x + (newWall.width / 2), 
+                        newWall.y2 - (newWall.gabY / 2),
+                        newWall.vx
+                    );
+                }
             }
 
             if(Wall.list[i].isOutside) {
@@ -76,7 +83,17 @@ export class App {
             }
         }
 
-        this.bird.update();
+        for (let i = Coin.list.length - 1; i > -1; i--) {
+            Coin.list[i].update();
+            Coin.list[i].draw();
+
+            if (Coin.list[i].x + Coin.list[i].width < 0) {
+                Coin.remove(i);
+            }
+        }
+
+        // this.bird.update();
         this.bird.draw();
+
     };
 }
