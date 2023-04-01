@@ -48,6 +48,7 @@ export class App {
     }
 
     reset() {
+        Coin.reset();
         Wall.reset();
         Wall.create();
         this.player = new Player();

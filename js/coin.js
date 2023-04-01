@@ -19,6 +19,9 @@ export class Coin {
         this.boundingBox = new BoundingBox(this.x, this.y, this.width, this.height);
     }
     
+    static reset() {
+        Coin.list = [];
+    }
     static create(x, y, vx) {
         Coin.list.push(new Coin(x, y, vx));
     }
