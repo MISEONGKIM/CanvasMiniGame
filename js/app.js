@@ -1,4 +1,4 @@
-import { Background, Wall } from "./index.js";
+import { Background, Wall, Bird } from "./index.js";
 
 export class App {
     static canvas = document.querySelector('canvas');
@@ -16,6 +16,8 @@ export class App {
             new Background({img : document.querySelector('#bg1-img'), speed : -4}),
         ];
         Wall.create();
+        this.bird = new Bird();
+
         this.preTime = Date.now();
         window.addEventListener('resize', this.resize.bind(this));
 
@@ -68,5 +70,8 @@ export class App {
                 Wall.remove(i);
             }
         }
+
+        this.bird.update();
+        this.bird.draw();
     };
 }
