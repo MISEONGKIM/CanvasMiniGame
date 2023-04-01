@@ -1,4 +1,4 @@
-import { Background } from "./background.js";
+import { Background, Wall } from "./index.js";
 
 export class App {
     static canvas = document.querySelector('canvas');
@@ -15,6 +15,9 @@ export class App {
             new Background({img : document.querySelector('#bg2-img'), speed : -2}),
             new Background({img : document.querySelector('#bg1-img'), speed : -4}),
         ];
+        this.walls = [
+            new Wall({type : 'BIG'})
+        ];
         this.preTime = Date.now();
         window.addEventListener('resize', this.resize.bind(this));
 
@@ -29,6 +32,10 @@ export class App {
         this.backgrounds.forEach(bg => {
             bg.update();
             bg.draw();
+        })
+        this.walls.forEach(w => {
+            w.update();
+            w.draw();
         })
 
         this.preTime = now - ((now - this.preTime) % App.interval);
